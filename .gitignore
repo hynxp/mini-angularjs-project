@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Logs
+logs
+*.log
+
+# Build output
+dist/
+build/
+
+# IDE files
+.idea/
+*.iml
+
+# System files
+Thumbs.db
+
+# Others
+.env
+.env.*
+
+# Webpack cache
+.cache/
+
+# VSCode
+.vscode/
+
+# 기타
+coverage/
+
+# OS별 임시 파일
+*.swp
+*.swo
+
