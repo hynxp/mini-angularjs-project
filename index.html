@@ -29,8 +29,17 @@
   <!-- AngularJS 앱의 루트: 반드시 body 안에 위치해야 함 -->
   <div ng-app="TeacherApp" ng-controller="TeacherController" class="container mt-5">
     <h2 class="mb-4">방문교사 관리 시스템</h2>
+    <!-- 교사 추가 폼 -->
+    <form class="form-inline mb-4" ng-submit="addTeacher()">
+      <input type="text" class="form-control mr-2 mb-2" ng-model="newTeacher.name" placeholder="이름" required>
+      <input type="number" class="form-control mr-2 mb-2" ng-model="newTeacher.visits" placeholder="방문 수" min="0">
+      <input type="number" class="form-control mr-2 mb-2" ng-model="newTeacher.newStudents" placeholder="신규 회원 수" min="0">
+      <button type="submit" class="btn btn-primary mb-2">교사 추가</button>
+    </form>
+    <!-- 로딩/에러 메시지 -->
     <div ng-if="isLoading" class="alert alert-info">데이터를 불러오는 중입니다...</div>
     <div ng-if="errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+    <!-- 교사 목록 테이블 -->
     <table ng-if="!isLoading && !errorMsg" class="table table-bordered table-hover table-sm mt-3">
       <thead class="thead-light">
         <tr>
@@ -38,14 +47,34 @@
           <th>이름</th>
           <th>방문 수</th>
           <th>신규 회원 수</th>
+          <th>관리</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="teacher in teachers">
           <td>{{teacher.id}}</td>
-          <td>{{teacher.name}}</td>
-          <td>{{teacher.visits}}</td>
-          <td>{{teacher.newStudents}}</td>
+          <td ng-if="!editingTeacher || editingTeacher.id !== teacher.id">{{teacher.name}}</td>
+          <td ng-if="editingTeacher && editingTeacher.id === teacher.id">
+            <input type="text" class="form-control" ng-model="editingTeacher.name">
+          </td>
+          <td ng-if="!editingTeacher || editingTeacher.id !== teacher.id">{{teacher.visits}}</td>
+          <td ng-if="editingTeacher && editingTeacher.id === teacher.id">
+            <input type="number" class="form-control" ng-model="editingTeacher.visits" min="0">
+          </td>
+          <td ng-if="!editingTeacher || editingTeacher.id !== teacher.id">{{teacher.newStudents}}</td>
+          <td ng-if="editingTeacher && editingTeacher.id === teacher.id">
+            <input type="number" class="form-control" ng-model="editingTeacher.newStudents" min="0">
+          </td>
+          <td>
+            <div ng-if="!editingTeacher || editingTeacher.id !== teacher.id">
+              <button class="btn btn-sm btn-info mr-1" ng-click="editTeacher(teacher)">수정</button>
+              <button class="btn btn-sm btn-danger" ng-click="deleteTeacher(teacher.id)">삭제</button>
+            </div>
+            <div ng-if="editingTeacher && editingTeacher.id === teacher.id">
+              <button class="btn btn-sm btn-success mr-1" ng-click="updateTeacher()">저장</button>
+              <button class="btn btn-sm btn-secondary" ng-click="cancelEdit()">취소</button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
