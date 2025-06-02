@@ -1,0 +1,13 @@
+[
+  { "id": 1, "name": "홍길동", "visits": 5, "newStudents": 2 },
+  { "id": 2, "name": "김영희", "visits": 3, "newStudents": 1 },
+  { "id": 3, "name": "이철수", "visits": 7, "newStudents": 3 },
+  { "id": 4, "name": "박민수", "visits": 2, "newStudents": 0 },
+  { "id": 5, "name": "최지우", "visits": 6, "newStudents": 2 },
+  { "id": 6, "name": "정해인", "visits": 4, "newStudents": 1 },
+  { "id": 7, "name": "오수진", "visits": 8, "newStudents": 4 },
+  { "id": 8, "name": "한지민", "visits": 1, "newStudents": 0 },
+  { "id": 9, "name": "김태희", "visits": 5, "newStudents": 2 },
+  { "id": 10, "name": "이동욱", "visits": 3, "newStudents": 1 }
+]
+
