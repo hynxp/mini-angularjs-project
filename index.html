@@ -1,32 +1,12 @@
 <!doctype html>
-<html class="no-js" lang="">
-
+<html lang="ko">
 <head>
   <meta charset="utf-8">
+  <title>AngularJS 최소 예제</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
-  <link rel="stylesheet" href="css/style.css">
-  <meta name="description" content="">
-
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-  <meta property="og:image:alt" content="">
-
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon.png">
-
-  <link rel="manifest" href="site.webmanifest">
-  <meta name="theme-color" content="#fafafa">
-
-  <!-- Bootstrap CSS CDN 추가 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 </head>
-
 <body>
-  <!-- AngularJS 앱의 루트: 반드시 body 안에 위치해야 함 -->
   <div ng-app="TeacherApp" ng-controller="TeacherController" class="container mt-5">
     <h2 class="mb-4">방문교사 관리 시스템</h2>
     <!-- 교사 추가 폼 -->
@@ -36,6 +16,33 @@
       <input type="number" class="form-control mr-2 mb-2" ng-model="newTeacher.newStudents" placeholder="신규 회원 수" min="0">
       <button type="submit" class="btn btn-primary mb-2">교사 추가</button>
     </form>
+    <!-- 교사 검색 입력창 -->
+    <div class="form-group mb-3">
+      <input type="text" class="form-control" ng-model="searchText" placeholder="이름, 방문 수, 신규 회원 수로 검색">
+    </div>
+    <!-- 정렬/페이징 컨트롤 -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <label class="mr-2">정렬:</label>
+        <select class="form-control d-inline-block w-auto mr-2" ng-model="sortKey">
+          <option value="id">번호</option>
+          <option value="name">이름</option>
+          <option value="visits">방문 수</option>
+          <option value="newStudents">신규 회원 수</option>
+        </select>
+        <button class="btn btn-outline-secondary btn-sm" ng-click="reverseSort = !reverseSort">
+          <span ng-if="!reverseSort">▲</span><span ng-if="reverseSort">▼</span>
+        </button>
+      </div>
+      <div>
+        <label class="mr-2">페이지당 행:</label>
+        <select class="form-control d-inline-block w-auto" ng-model="pageSize">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+    </div>
     <!-- 로딩/에러 메시지 -->
     <div ng-if="isLoading" class="alert alert-info">데이터를 불러오는 중입니다...</div>
     <div ng-if="errorMsg" class="alert alert-danger">{{errorMsg}}</div>
@@ -51,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="teacher in teachers">
+        <tr ng-repeat="teacher in (teachers | filter:searchText | orderBy:sortKey:reverseSort) | limitTo:pageSize:((currentPage-1)*pageSize)">
           <td>{{teacher.id}}</td>
           <td ng-if="!editingTeacher || editingTeacher.id !== teacher.id">{{teacher.name}}</td>
           <td ng-if="editingTeacher && editingTeacher.id === teacher.id">
@@ -78,12 +85,26 @@
         </tr>
       </tbody>
     </table>
+    <!-- 페이징 네비게이션 -->
+    <nav ng-if="!isLoading && !errorMsg && teachers.length > pageSize" aria-label="페이지네이션">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" ng-class="{disabled: currentPage === 1}">
+          <a class="page-link" href="#" ng-click="setPage(currentPage-1)">이전</a>
+        </li>
+        <li class="page-item" ng-repeat="n in getPageArray()" ng-class="{active: n === currentPage}">
+          <a class="page-link" href="#" ng-click="setPage(n)">{{n}}</a>
+        </li>
+        <li class="page-item" ng-class="{disabled: currentPage === getTotalPages()}">
+          <a class="page-link" href="#" ng-click="setPage(currentPage+1)">다음</a>
+        </li>
+      </ul>
+    </nav>
   </div>
-  <!-- AngularJS와 app.js는 body 맨 아래에 위치해야 함 -->
+  <!-- AngularJS 라이브러리 로드 -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="js/app.js"></script>
   <script>
-    // AngularJS가 정상적으로 로드됐는지 콘솔에서 확인
+    // AngularJS 로드 확인
     if (window.angular) {
       console.log('AngularJS loaded:', angular.version.full);
     } else {
@@ -91,5 +112,4 @@
     }
   </script>
 </body>
-
 </html>
